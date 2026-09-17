@@ -3,43 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OriginX | Developer Portal</title>
+    <title>OriginX | Developer Portal & App Hub</title>
     <style>
-        :root { --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --subtext: #94a3b8; --accent: #38bdf8; --border: #334155; }
+        :root {
+            --bg: #0b0f19;
+            --card: #151d2a;
+            --card-border: #263346;
+            --text: #f8fafc;
+            --subtext: #94a3b8;
+            --accent: #38bdf8;
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --success: #22c55e;
+        }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: var(--bg); color: var(--text); line-height: 1.6; padding: 2rem 1rem; }
-        .container { max-width: 800px; margin: 0 auto; }
-        header { border-bottom: 1px solid var(--border); padding-bottom: 2rem; margin-bottom: 2rem; }
-        h1 { font-size: 2.2rem; font-weight: 800; color: #fff; margin-bottom: 0.5rem; }
-        .bio { color: var(--subtext); font-size: 1.1rem; }
-        .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
-        h2 { font-size: 1.3rem; margin-bottom: 0.5rem; color: var(--accent); }
-        p { color: var(--subtext); margin-bottom: 1rem; }
-        .badge { background: #0369a1; color: #e0f2fe; padding: 0.2rem 0.6rem; border-radius: 6px; font-size: 0.8rem; font-weight: bold; }
-        footer { margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 1.5rem; text-align: center; color: var(--subtext); font-size: 0.9rem; }
+        body { background-color: var(--bg); color: var(--text); line-height: 1.6; padding: 2rem 1rem; min-height: 100vh; display: flex; flex-direction: column; }
+        .container { max-width: 800px; margin: 0 auto; width: 100%; flex: 1; }
+        header { border-bottom: 1px solid var(--card-border); padding-bottom: 1.5rem; margin-bottom: 2rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+        .logo-group { display: flex; align-items: center; gap: 0.75rem; }
+        .logo-icon { width: 42px; height: 42px; background: linear-gradient(135deg, var(--primary), var(--accent)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.3rem; color: #fff; }
+        h1 { font-size: 2rem; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+        .bio { color: var(--subtext); font-size: 1rem; margin-top: 0.2rem; }
+        
+        .card { background: var(--card); border: 1px solid var(--card-border); border-radius: 16px; padding: 1.75rem; margin-bottom: 1.5rem; transition: transform 0.2s ease, border-color 0.2s ease; }
+        .card:hover { border-color: #3b82f6; }
+        h2 { font-size: 1.3rem; margin-bottom: 0.6rem; color: var(--accent); display: flex; align-items: center; gap: 0.5rem; }
+        p { color: var(--subtext); margin-bottom: 1.2rem; font-size: 0.98rem; }
+        
+        .badge { background: rgba(56, 189, 248, 0.15); color: var(--accent); border: 1px solid rgba(56, 189, 248, 0.3); padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; display: inline-block; }
+        .badge.online { background: rgba(34, 197, 94, 0.15); color: var(--success); border-color: rgba(34, 197, 94, 0.3); }
+
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background: linear-gradient(135deg, var(--primary), #4338ca); color: #fff; font-weight: 700; padding: 0.85rem 1.5rem; border-radius: 12px; text-decoration: none; border: none; cursor: pointer; font-size: 1rem; transition: all 0.2s ease; box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35); }
+        .btn:hover { background: var(--primary-hover); transform: translateY(-1px); }
+        .btn-outline { background: transparent; border: 1px solid var(--card-border); color: var(--text); box-shadow: none; }
+        .btn-outline:hover { background: rgba(255,255,255,0.05); border-color: var(--subtext); }
+
+        /* Modal Popup */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(11, 15, 25, 0.85); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 1rem; z-index: 999; opacity: 0; pointer-events: none; transition: opacity 0.25s ease; }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-box { background: var(--card); border: 1px solid var(--card-border); border-radius: 20px; padding: 2rem; max-width: 440px; width: 100%; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.5); transform: translateY(20px); transition: transform 0.25s ease; }
+        .modal-overlay.active .modal-box { transform: translateY(0); }
+        .modal-title { font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 0.5rem; }
+        .modal-desc { color: var(--subtext); margin-bottom: 1.5rem; font-size: 0.95rem; }
+        .modal-actions { display: flex; flex-direction: column; gap: 0.75rem; }
+
+        footer { margin-top: auto; border-top: 1px solid var(--card-border); padding-top: 1.5rem; text-align: center; color: var(--subtext); font-size: 0.9rem; }
         footer a { color: var(--accent); text-decoration: none; margin: 0 0.5rem; }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>OriginX</h1>
-            <p class="bio">Official Developer Workspace &amp; Application Portal</p>
+            <div class="logo-group">
+                <div class="logo-icon">O</div>
+                <div>
+                    <h1>OriginX</h1>
+                    <p class="bio">Official Developer Workspace &amp; Universal Link Hub</p>
+                </div>
+            </div>
+            <span class="badge online">● System Operational</span>
         </header>
 
         <section class="card">
-            <h2>About Platform</h2>
-            <p>Welcome to OriginX. We design, develop, and deliver high-performance Android utility software and interactive solutions.</p>
-            <span class="badge">Active Development</span>
+            <h2>📱 PICZY Android Application</h2>
+            <p>High-performance photo sharing, social community, and creative creator suite powered by Cloudflare Workers Ecosystem.</p>
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                <button class="btn" onclick="openAppOrPlayStore()">Launch App</button>
+                <a class="btn btn-outline" href="https://play.google.com/store/apps/details?id=com.aistudio.piczy.mrvxpt" target="_blank">Get on Play Store</a>
+            </div>
         </section>
 
         <section class="card">
-            <h2>Our Products &amp; Services</h2>
-            <p>Building intuitive applications focusing on efficiency, minimal UI, and system optimization.</p>
+            <h2>🛠️ Platform Services</h2>
+            <p>Building intuitive applications focusing on high-speed API performance, encrypted storage, and real-time social feeds.</p>
+            <span class="badge">Active Development</span>
         </section>
 
         <footer>
-            <p>&copy; 2026 OriginX. All rights reserved.</p>
+            <p>&copy; 2026 OriginX Development. All rights reserved.</p>
             <p>
                 <a href="#">Privacy Policy</a> &bull; 
                 <a href="#">Terms of Service</a> &bull; 
@@ -47,5 +88,61 @@
             </p>
         </footer>
     </div>
+
+    <!-- Smart Open / Fallback Popup Modal -->
+    <div class="modal-overlay" id="appModal">
+        <div class="modal-box">
+            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📸</div>
+            <h3 class="modal-title" id="modalTitle">Opening PICZY App...</h3>
+            <p class="modal-desc" id="modalDesc">If the app is installed, it will open automatically. Otherwise, you can get it on Google Play Store below.</p>
+            <div class="modal-actions">
+                <a class="btn" id="playStoreBtn" href="https://play.google.com/store/apps/details?id=com.aistudio.piczy.mrvxpt" target="_blank">Download on Google Play Store</a>
+                <button class="btn btn-outline" onclick="closeModal()">Continue on Web</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.aistudio.piczy.mrvxpt";
+
+        function openModal(title, desc) {
+            if (title) document.getElementById('modalTitle').innerText = title;
+            if (desc) document.getElementById('modalDesc').innerText = desc;
+            document.getElementById('appModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('appModal').classList.remove('active');
+        }
+
+        function openAppOrPlayStore() {
+            const path = window.location.pathname;
+            let customScheme = "piczy://main";
+
+            if (path.startsWith("/u/")) {
+                const username = path.replace("/u/", "").trim();
+                customScheme = `piczy://u/${username}`;
+            } else if (path.startsWith("/post/")) {
+                const postId = path.replace("/post/", "").trim();
+                customScheme = `piczy://post/${postId}`;
+            }
+
+            // Attempt launch
+            window.location.href = customScheme;
+
+            // Show popup fallback after 1.2 seconds if app is not installed
+            setTimeout(() => {
+                openModal("PICZY App Required", "To view this full profile or post, install PICZY on Google Play Store.");
+            }, 1200);
+        }
+
+        // Auto-detect profile or post path on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            const path = window.location.pathname;
+            if (path.startsWith("/u/") || path.startsWith("/post/")) {
+                openAppOrPlayStore();
+            }
+        });
+    </script>
 </body>
 </html>
